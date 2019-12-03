@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.matchup.Fragments.ChatsFragment;
 import com.example.matchup.Fragments.PlayersFragment;
+import com.example.matchup.Fragments.ProfileFragment;
 import com.example.matchup.Model.User;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
         viewPagerAdapter.addFragment(new PlayersFragment(), "Players");
+        viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
 
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -143,4 +145,6 @@ public class MainActivity extends AppCompatActivity {
             return titles.get(position);
         }
     }
+
+    //testin :c
 }
