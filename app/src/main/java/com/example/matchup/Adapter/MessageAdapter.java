@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
+//Displays messages
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
     public static final int MSG_TYPE_LEFT = 0;
