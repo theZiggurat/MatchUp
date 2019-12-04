@@ -18,7 +18,7 @@ import com.example.matchup.R;
 
 import java.util.List;
 
-//Displays other registered players 
+//Displays other registered players
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
 
     private Context mContext;
