@@ -25,6 +25,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+//User profile
+//TODO:
+// (a) Retrieve user location and list it
+// (b) Allow user to specify level of athleticism
+// (c) Specify what sports user is interested in
 public class ProfileFragment extends Fragment {
 
     CircleImageView image_profile;

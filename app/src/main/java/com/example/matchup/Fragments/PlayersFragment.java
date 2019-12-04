@@ -27,6 +27,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+//Displays other registered players
+//TODO:
+// (a) Display registers players from closest distance to farthest distance
+// (b) onShortClick display user profile --> open another activity
 public class PlayersFragment extends Fragment {
 
     private RecyclerView recyclerView;

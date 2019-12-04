@@ -28,6 +28,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+//Displays chats with players
+//TODO:
+// (a) Display most recent message exchange in chat
+// (b) Notify user of message
 public class ChatsFragment extends Fragment {
 
     private RecyclerView recyclerView;
