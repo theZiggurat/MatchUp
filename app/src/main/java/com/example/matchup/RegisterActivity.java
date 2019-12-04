@@ -23,6 +23,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.HashMap;
 
 //Register Activity
+//this is my change
 public class RegisterActivity extends AppCompatActivity {
 
     MaterialEditText username, email, password;
