@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 MatchUp/
+app/google-services.json
