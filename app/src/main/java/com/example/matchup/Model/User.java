@@ -1,5 +1,7 @@
 package com.example.matchup.Model;
 
+import android.location.Location;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,6 +11,7 @@ public class User {
     private String username;
     private String imageURL;
     private HashMap<String, Integer> sports;
+    private double latitude, longitude;
 
 
     public User(String id, String username, String imageURL) {
