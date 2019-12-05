@@ -1,20 +1,31 @@
 package com.example.matchup.Model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class User {
 
     private String id;
     private String username;
     private String imageURL;
+    private HashMap<String, Integer> sports;
 
 
     public User(String id, String username, String imageURL) {
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
+        this.sports = new HashMap<>();
     }
 
     public User() {
 
+    }
+
+    public void addSport(String sport, int skill){
+        if(sports.containsKey(sport))
+            sports.remove(sport);
+        sports.put(sport, skill);
     }
 
     public String getId() {
@@ -39,5 +50,9 @@ public class User {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public HashMap<String, Integer> getSports(){
+        return this.sports;
     }
 }
