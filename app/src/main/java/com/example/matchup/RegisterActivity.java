@@ -22,6 +22,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.HashMap;
 
+// max-branch change
+
 //Register Activity
 public class RegisterActivity extends AppCompatActivity {
 
@@ -83,6 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("id", userid);
                             hashMap.put("username", username);
                             hashMap.put("imageURL", "default");
+
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
