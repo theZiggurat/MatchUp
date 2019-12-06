@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.matchup.Adapter.PlayerAdapter;
 import com.example.matchup.Model.Chat;
@@ -101,17 +102,14 @@ public class ChatsFragment extends Fragment {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
 
-                    //Display one (1) user from chats
+                    //Display users with whom you have messages
                     for(String id : usersList){
                         if(user.getId().equals(id)){
-                            if(mUsers.size() != 0){
-                                for(User user1 : mUsers){
-                                    if(!user.getId().equals(user1.getId())){
-                                        mUsers.add(user);
-                                    }
+                            assert user != null;
+                            if(user.getId().equals(id)){
+                                if(!mUsers.contains(user)) {
+                                    mUsers.add(user);
                                 }
-                            } else {
-                                mUsers.add(user);
                             }
                         }
                     }
