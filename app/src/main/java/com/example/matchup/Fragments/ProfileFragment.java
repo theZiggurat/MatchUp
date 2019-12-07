@@ -1,20 +1,29 @@
 package com.example.matchup.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.matchup.MainActivity;
 import com.example.matchup.Model.User;
 import com.example.matchup.R;
+import com.example.matchup.RegisterActivity;
+import com.example.matchup.StartActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +46,8 @@ public class ProfileFragment extends Fragment {
 
     DatabaseReference reference;
     FirebaseUser fuser;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
