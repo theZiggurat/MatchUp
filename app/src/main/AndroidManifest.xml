@@ -26,6 +26,10 @@
             android:name=".RegisterActivity"
             android:parentActivityName=".StartActivity" />
         <activity android:name=".MainActivity" />
+        <activity
+            android:name=".ProfileCompletionActivity"
+            android:parentActivityName=".RegisterActivity"
+            />
     </application>
 
 </manifest>

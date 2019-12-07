@@ -2,8 +2,18 @@ package com.example.matchup.Model;
 
 import android.location.Location;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Semaphore;
 
 public class User {
 
@@ -24,6 +34,36 @@ public class User {
     public User() {
 
     }
+
+    /**
+     * this is really dumb but im keeping it as a reference
+     */
+//    public User(FirebaseUser user){
+//        this.sports = new HashMap<>();
+//        DatabaseReference reference = FirebaseDatabase
+//                .getInstance()
+//                .getReference("Users")
+//                .child(user.getUid());
+//
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                User.this.username = dataSnapshot.child("username").getValue(String.class);
+//                User.this.id = dataSnapshot.child("id").getValue(String.class);
+//                User.this.imageURL = dataSnapshot.child("imageURL").getValue(String.class);
+//                for(DataSnapshot d: dataSnapshot.child("sports").getChildren()){
+//                    User.this.addSport(d.getKey(), d.getValue(Integer.class));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//
+//    }
 
     public void addSport(String sport, int skill){
         if(sports.containsKey(sport))
