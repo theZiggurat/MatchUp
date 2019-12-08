@@ -101,11 +101,18 @@ public class ProfileFragment extends Fragment {
         image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openImage();
+                openDialog();
             }
         });
 
         return view;
+    }
+
+    private void openDialog(){
+        //Intent intent = new Intent(getActivity(), PhotoImportFragment.class);
+        Intent intent = new Intent();
+        intent.setClassName("com.example.matchup", "com.example.matchup.PhotoImport");
+        startActivityForResult(intent, 2);
     }
 
     private void openImage(){
@@ -173,7 +180,18 @@ public class ProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null
+        //FINISHING auxiliary activity:
+        if (requestCode == 2){
+            int optionId = data.getIntExtra("optionId", 0);
+
+            if (optionId == 0){
+                openImage();
+            }
+            if (optionId == 1){ //Take a picture
+
+            }
+        } //Image data regarding storage DB
+        else if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null
         && data.getData() != null){
             imageUri = data.getData();
             if (uploadTask != null && uploadTask.isInProgress()){

@@ -34,6 +34,9 @@
             android:name=".ProfileCompletionActivity"
             android:parentActivityName=".RegisterActivity"
             />
+        <activity android:name=".PhotoImport"
+            android:theme="@style/AppTheme.CustomTheme">
+        </activity>
     </application>
 
 </manifest>
