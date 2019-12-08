@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
@@ -73,6 +74,7 @@ public class SportsAdapter extends RecyclerView.Adapter<SportsAdapter.ViewHolder
             notifyDataSetChanged();
             }
         });
+
     }
 
     @Override
@@ -106,8 +108,10 @@ public class SportsAdapter extends RecyclerView.Adapter<SportsAdapter.ViewHolder
         TextView proficiency, sportName;
         Button deleteButton;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
 
             sportName = itemView.findViewById(R.id.sport);
             seekBar = itemView.findViewById(R.id.seekbar);
@@ -115,4 +119,6 @@ public class SportsAdapter extends RecyclerView.Adapter<SportsAdapter.ViewHolder
             deleteButton = itemView.findViewById(R.id.btndelete);
         }
     }
+
+
 }

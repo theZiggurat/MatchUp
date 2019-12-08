@@ -73,29 +73,27 @@ public class PlayersFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     if(snap.getKey()!=firebaseUser.getUid())
                         mUsers.add(snap);
                     else {
-                            Object objLat = snap.child("location").child("lat").getValue();
-                            Object objLon = snap.child("location").child("lon").getValue();
-                            if(objLat != null && objLon != null){
-                                lat = (double) objLat;
-                                lon = (double) objLon;
-                            }
+                        Object objLat = snap.child("location").child("lat").getValue();
+                        Object objLon = snap.child("location").child("lon").getValue();
+                        if(objLat != null && objLon != null){
+                            lat = (double) objLat;
+                            lon = (double) objLon;
+                        }
                     }
                 }
 
                 playersAdapter = new PlayersAdapter(getContext(), mUsers, false, lat, lon);
                 recyclerView.setAdapter(playersAdapter);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
     @Override
     public void onRefresh() {
         readUsers();
-        swipeRefreshLayout.setRefreshing(false);
     }
 }
