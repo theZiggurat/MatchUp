@@ -51,8 +51,19 @@
             android:textColorHint="@color/colorAccent"
             app:met_primaryColor="#eee"
             app:met_baseColor="#eee"
-            android:hint="Password"
-            android:layout_marginBottom="300dp"/>
+            android:hint="Password" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Forgot your password?"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="end"
+            android:textStyle="bold"
+            android:id="@+id/forgot_password"
+            android:textColor="#fff"
+            android:layout_marginBottom="250dp"/>
 
         <Button
             android:layout_width="match_parent"
@@ -63,6 +74,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginHorizontal="30dp"
             android:textColor="#fff"/>
+
+
 
     </LinearLayout>
 
