@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
             return titles.get(position);
         }
     }
-
+  
     private void status(String status){
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
