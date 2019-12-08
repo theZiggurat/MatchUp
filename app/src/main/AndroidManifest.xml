@@ -3,6 +3,7 @@
     package="com.example.matchup">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data android:name="com.google.android.calendar.v3.API_KEY"
+            android:value="AIzaSyArt-FU7t2RfO82IV6Hcoq8FJsB6ukj680" />
+
         <activity android:name=".MessageActivity"></activity>
         <activity android:name=".StartActivity">
             <intent-filter>
