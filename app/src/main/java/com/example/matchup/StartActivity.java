@@ -64,7 +64,7 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-    private final int COARSE_LOCATION_REQUEST_PERMISSION = 98;
+    private final int LOCATION_REQUEST_PERMISSION = 98;
 
     boolean checkLocationPermissions(){
         if(ContextCompat.checkSelfPermission(this,
@@ -80,16 +80,16 @@ public class StartActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ActivityCompat.requestPermissions(StartActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                        COARSE_LOCATION_REQUEST_PERMISSION);
+                                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                                        LOCATION_REQUEST_PERMISSION);
                             }
                         })
                     .create()
                     .show();
             } else {
                 ActivityCompat.requestPermissions(StartActivity.this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        COARSE_LOCATION_REQUEST_PERMISSION);
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_REQUEST_PERMISSION);
             }
             return false;
         }
@@ -99,7 +99,7 @@ public class StartActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case COARSE_LOCATION_REQUEST_PERMISSION: {
+            case LOCATION_REQUEST_PERMISSION: {
                 if(grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED){
 

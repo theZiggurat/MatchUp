@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private final int COARSE_LOCATION_REQUEST_PERMISSION = 98;
+    private final int LOCATION_REQUEST_PERMISSION = 98;
 
     boolean checkLocationPermissions() {
         if (ContextCompat.checkSelfPermission(this,
@@ -152,16 +152,16 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                        COARSE_LOCATION_REQUEST_PERMISSION);
+                                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                                        LOCATION_REQUEST_PERMISSION);
                             }
                         })
                         .create()
                         .show();
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        COARSE_LOCATION_REQUEST_PERMISSION);
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_REQUEST_PERMISSION);
             }
             return false;
         }
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case COARSE_LOCATION_REQUEST_PERMISSION: {
+            case LOCATION_REQUEST_PERMISSION: {
                 if (grantResults.length > 0 &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -194,34 +194,42 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     void startLocationLogging() {
+        final LocationListener listener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if(location==null) return;
+
+                double lat = location.getLatitude();
+                double lon = location.getLongitude();
+
+                final DatabaseReference databaseLocation = reference.child("location");
+                databaseLocation.child("lat").setValue(lat);
+                databaseLocation.child("lon").setValue(lon);
+
+                // DEBUG ONLY
+//                Toast.makeText(MainActivity.this, "Location updated!", Toast.LENGTH_SHORT)
+//                        .show();
+            }
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) { }
+            @Override
+            public void onProviderEnabled(String provider) { }
+            @Override
+            public void onProviderDisabled(String provider) { }
+        };
+
         ((LocationManager) getSystemService(Context.LOCATION_SERVICE))
                 .requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    0L,
-                    0f,
-                    new LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-                            if(location==null) return;
+                    0L, 0f,
+                    listener
+                );
 
-                            double lat = location.getLatitude();
-                            double lon = location.getLongitude();
-
-                            final DatabaseReference databaseLocation = reference.child("location");
-                            databaseLocation.child("lat").setValue(lat);
-                            databaseLocation.child("lon").setValue(lon);
-
-                            // DEBUG ONLY
-                            Toast.makeText(MainActivity.this, "Location updated!", Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                        @Override
-                        public void onStatusChanged(String provider, int status, Bundle extras) { }
-                        @Override
-                        public void onProviderEnabled(String provider) { }
-                        @Override
-                        public void onProviderDisabled(String provider) { }
-                    }
+        ((LocationManager) getSystemService(Context.LOCATION_SERVICE))
+                .requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        0L, 0f,
+                        listener
                 );
     }
 
