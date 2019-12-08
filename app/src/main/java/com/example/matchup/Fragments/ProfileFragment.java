@@ -101,15 +101,14 @@ public class ProfileFragment extends Fragment {
         image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "openImage();", Toast.LENGTH_SHORT).show();
-                //openImage();
+                openImage();
             }
         });
 
         return view;
     }
 
-    /*private void openImage(){
+    private void openImage(){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -131,8 +130,8 @@ public class ProfileFragment extends Fragment {
             final StorageReference fileReference = storageReference.child(System.currentTimeMillis()+
                     "."+getFileExtension(imageUri));
 
-            uploadTask = fileReference.getFile(imageUri);
-            uploadTask.continueWith(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            uploadTask = fileReference.putFile(imageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()){
@@ -183,5 +182,5 @@ public class ProfileFragment extends Fragment {
                 uploadImage();
             }
         }
-    }*/
+    }
 }
