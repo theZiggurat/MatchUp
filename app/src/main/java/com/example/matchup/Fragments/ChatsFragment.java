@@ -1,7 +1,5 @@
 package com.example.matchup.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,9 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.matchup.Adapter.PlayerAdapter;
+import com.example.matchup.Adapter.ChatsAdapter;
 import com.example.matchup.Model.Chat;
 import com.example.matchup.Model.User;
 import com.example.matchup.Notifications.Token;
@@ -39,7 +36,7 @@ public class ChatsFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private PlayerAdapter playerAdapter;
+    private ChatsAdapter chatsAdapter;
     private List<User> mUsers;
 
     FirebaseUser fuser;
@@ -126,8 +123,8 @@ public class ChatsFragment extends Fragment {
                     }
                 }
 
-                playerAdapter = new PlayerAdapter(getContext(), mUsers, true);
-                recyclerView.setAdapter(playerAdapter);
+                chatsAdapter = new ChatsAdapter(getContext(), mUsers, true);
+                recyclerView.setAdapter(chatsAdapter);
 
             }
 

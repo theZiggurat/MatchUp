@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import android.webkit.MimeTypeMap;
@@ -76,6 +77,8 @@ public class ProfileFragment extends Fragment implements SportsAdapter.OnSportCh
     RecyclerView recyclerView;
     SportsAdapter sportsAdapter;
     FloatingActionButton fab;
+    EditText editProfile;
+    Button buttonSave;
 
     StorageReference storageReference;
     private static final int IMAGE_REQUEST = 1;
@@ -92,6 +95,8 @@ public class ProfileFragment extends Fragment implements SportsAdapter.OnSportCh
         username = view.findViewById(R.id.username);
         recyclerView = view.findViewById(R.id.recycler_view);
         fab = view.findViewById(R.id.fab);
+        editProfile = view.findViewById(R.id.profile_description);
+        buttonSave = view.findViewById(R.id.savebtn);
 
         sportsAdapter = new SportsAdapter(getActivity(), this);
         recyclerView.setAdapter(sportsAdapter);
@@ -116,6 +121,13 @@ public class ProfileFragment extends Fragment implements SportsAdapter.OnSportCh
             }
         });
 
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reference.child("description").setValue(editProfile.getText().toString());
+            }
+        });
+
         return view;
     }
 
@@ -135,6 +147,11 @@ public class ProfileFragment extends Fragment implements SportsAdapter.OnSportCh
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 } else {
                     Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
+                }
+
+                String description = (String)dataSnapshot.child("description").getValue();
+                if(description != null){
+                    editProfile.setText(description);
                 }
             }
 

@@ -1,19 +1,20 @@
 package com.example.matchup.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.matchup.Adapter.PlayerAdapter;
+import com.example.matchup.Adapter.ChatsAdapter;
+import com.example.matchup.Adapter.PlayersAdapter;
 import com.example.matchup.Model.User;
 import com.example.matchup.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,11 +32,12 @@ import java.util.List;
 //TODO:
 // (a) Display registers players from closest distance to farthest distance
 // (b) onShortClick display user profile --> open another activity
-public class PlayersFragment extends Fragment {
+public class PlayersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView recyclerView;
-    private PlayerAdapter playerAdapter;
-    private List<User> mUsers;
+    private PlayersAdapter playersAdapter;
+    private ArrayList<DataSnapshot> mUsers;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,7 +46,12 @@ public class PlayersFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
+
+        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+        pagerSnapHelper.attachToRecyclerView(recyclerView);
 
         mUsers = new ArrayList<>();
 
@@ -57,24 +64,26 @@ public class PlayersFragment extends Fragment {
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUsers.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    User user = snapshot.getValue(User.class);
-
-                    assert user != null;
-                    assert firebaseUser != null;
-                    if(!user.getId().equals(firebaseUser.getUid())){
-                        mUsers.add(user);
+                double lat = 0.0, lon = 0.0;
+                for(DataSnapshot snap: dataSnapshot.getChildren()){
+                    if(snap.getKey()!=firebaseUser.getUid())
+                        mUsers.add(snap);
+                    else {
+                            Object objLat = snap.child("location").child("lat").getValue();
+                            Object objLon = snap.child("location").child("lon").getValue();
+                            if(objLat != null && objLon != null){
+                                lat = (double) objLat;
+                                lon = (double) objLon;
+                            }
                     }
                 }
 
-                playerAdapter = new PlayerAdapter(getContext(), mUsers, false);
-                recyclerView.setAdapter(playerAdapter);
-
+                playersAdapter = new PlayersAdapter(getContext(), mUsers, false, lat, lon);
+                recyclerView.setAdapter(playersAdapter);
             }
 
             @Override
@@ -82,7 +91,11 @@ public class PlayersFragment extends Fragment {
 
             }
         });
-
     }
 
+    @Override
+    public void onRefresh() {
+        readUsers();
+        swipeRefreshLayout.setRefreshing(false);
+    }
 }

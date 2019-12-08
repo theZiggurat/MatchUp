@@ -17,31 +17,43 @@
             android:layout_height="238dp"
             android:padding="8dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textColor="@color/colorPrimaryDark" />
 
             <TextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/profile_image"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
                 android:text="username"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="18sp"
+                android:textSize="23sp"
                 android:textStyle="bold" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
                 android:src="@mipmap/ic_launcher" />
+
+            <EditText
+                android:text="Enter profile description here"
+                android:id="@+id/profile_description"
+                android:layout_margin="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="150dp"
+                android:layout_toRightOf="@+id/profile_image"
+                />
+
+            <Button
+                android:id="@+id/savebtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profile_description"
+                android:text="Save"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"/>
 
         </RelativeLayout>
 
