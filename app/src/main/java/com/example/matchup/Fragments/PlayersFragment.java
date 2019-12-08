@@ -72,7 +72,7 @@ public class PlayersFragment extends Fragment {
                     }
                 }
 
-                playerAdapter = new PlayerAdapter(getContext(), mUsers);
+                playerAdapter = new PlayerAdapter(getContext(), mUsers, false);
                 recyclerView.setAdapter(playerAdapter);
 
             }
