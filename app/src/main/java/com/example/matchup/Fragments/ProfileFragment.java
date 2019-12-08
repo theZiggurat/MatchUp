@@ -160,6 +160,8 @@ public class ProfileFragment extends Fragment implements SportsAdapter.OnSportCh
         });
     }
 
+
+
     void updateRecyclerView(DataSnapshot dataSnapshot){
         ArrayList<Sport> sports = new ArrayList<>((int)dataSnapshot.getChildrenCount());
         for(DataSnapshot snapshot: dataSnapshot.child("sports").getChildren()){
