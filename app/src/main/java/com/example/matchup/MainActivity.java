@@ -194,12 +194,14 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     void startLocationLogging() {
+
         ((LocationManager) getSystemService(Context.LOCATION_SERVICE))
                 .requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
                     0L,
                     0f,
                     new LocationListener() {
+
                         @Override
                         public void onLocationChanged(Location location) {
                             if(location==null) return;
