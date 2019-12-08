@@ -215,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
                             databaseLocation.child("lon").setValue(lon);
 
                             // DEBUG ONLY
-                            Toast.makeText(MainActivity.this, "Location updated!", Toast.LENGTH_SHORT)
-                                    .show();
+//                            Toast.makeText(MainActivity.this, "Location updated!", Toast.LENGTH_SHORT)
+//                                    .show();
                         }
                         @Override
                         public void onStatusChanged(String provider, int status, Bundle extras) { }
