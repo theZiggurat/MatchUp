@@ -56,7 +56,7 @@ public class ProfileCompletionActivity extends AppCompatActivity implements Spor
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position==0) return;
-                Sport sp = new Sport(spinnerList.get(position), 0);
+                Sport sp = new Sport(spinnerList.get(position), 1);
                 sportsAdapter.addSport(sp);
                 spinnerList.remove(position);
                 spinnerAdapter.notifyDataSetChanged();
