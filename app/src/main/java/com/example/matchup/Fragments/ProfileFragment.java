@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.example.matchup.StartActivity;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -161,7 +163,7 @@ public class ProfileFragment extends Fragment {
                         pd.dismiss();
                     }
                     else {
-                        Toast.makeText(getContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Failed because over daily quota.", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
                 }
@@ -188,17 +190,38 @@ public class ProfileFragment extends Fragment {
                 openImage();
             }
             if (optionId == 1){ //Take a picture
-
+                takePhoto();
             }
+        } //Camera result
+        else if (requestCode == 3){
+            //Broken code b/c of Storage
+            /*final ProgressDialog pd = new ProgressDialog(getContext());
+            pd.setMessage("Uploading");
+            pd.show();
+
+            Uri uri = data.getData();
+            StorageReference filepath = storageReference.child("Photo").child(uri.getLastPathSegment());
+            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    pd.dismiss();
+                    Toast.makeText(getContext(), "Uploading Finished", Toast.LENGTH_SHORT).show();
+                }
+            });*/
+
         } //Image data regarding storage DB
         else if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null
         && data.getData() != null){
             imageUri = data.getData();
             if (uploadTask != null && uploadTask.isInProgress()){
                 Toast.makeText(getContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
-            } else{
+            } else {
                 uploadImage();
             }
         }
+    }
+    public void takePhoto(){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, 3);
     }
 }
