@@ -67,6 +67,7 @@ public class PlayersFragment extends Fragment implements SwipeRefreshLayout.OnRe
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(getActivity()==null) return;
                 mUsers.clear();
                 double lat = 0.0, lon = 0.0;
                 for(DataSnapshot snap: dataSnapshot.getChildren()){
