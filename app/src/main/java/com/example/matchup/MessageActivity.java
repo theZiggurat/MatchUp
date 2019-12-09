@@ -147,7 +147,7 @@ public class MessageActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         });
-        ImageButton btnSavedPhoto = (ImageButton) findViewById(R.id.btnSavedPhoto);
+        /*ImageButton btnSavedPhoto = (ImageButton) findViewById(R.id.btnSavedPhoto);
         btnSavedPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +166,7 @@ public class MessageActivity extends AppCompatActivity {
                 //Somehow be able to load photos/ImageView into a chat msg
                 //Somehow read photos in storage database
             }
-        });
+        });*/
 
         seenMessage(userid);
     }
