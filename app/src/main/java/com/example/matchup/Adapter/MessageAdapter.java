@@ -80,6 +80,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public int getItemCount() {
         return mChat.size();
     }
+    // this will return the Item Count
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
