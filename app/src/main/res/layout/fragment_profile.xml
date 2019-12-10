@@ -55,7 +55,16 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"/>
-          
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profile_image"
+                android:layout_marginTop="4dp"
+                android:text="Tap profile picture to change."
+                android:textSize="8dp" />
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
