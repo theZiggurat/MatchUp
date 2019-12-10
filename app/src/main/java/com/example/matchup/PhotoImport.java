@@ -27,7 +27,7 @@ public class PhotoImport extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         int width = (int) (1 * dm.widthPixels);
-        int height = (int) (.25 * dm.heightPixels);
+        int height = (int) (.18 * dm.heightPixels);
 
         getWindow().setLayout(width, height);
         getWindow().setGravity(Gravity.BOTTOM);
@@ -46,7 +46,7 @@ public class PhotoImport extends Activity {
                 finish();
             }
         });
-        Button btnTake = (Button) findViewById(R.id.btnTakePhoto);
+        /*Button btnTake = (Button) findViewById(R.id.btnTakePhoto);
         btnTake.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -58,7 +58,7 @@ public class PhotoImport extends Activity {
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }
-        });
+        });*/
         Button btnCancel = (Button) findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(new View.OnClickListener(){
             @Override

@@ -16,11 +16,7 @@
             android:layout_height="wrap_content"
             android:text="Choose from Saved Photos" />
 
-        <Button
-            android:id="@+id/btnTakePhoto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Take a Photo" />
+
 
         <Button
             android:id="@+id/btnCancel"
