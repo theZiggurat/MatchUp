@@ -67,6 +67,7 @@ public class PlayersFragment extends Fragment implements SwipeRefreshLayout.OnRe
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(getActivity()==null) return;
                 mUsers.clear();
                 double lat = 0.0, lon = 0.0;
                 ArrayList<String> user_sports = new ArrayList<>();
@@ -74,16 +75,16 @@ public class PlayersFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     if(snap.getKey()!=firebaseUser.getUid())
                         mUsers.add(snap);
                     else {
-                            Object objLat = snap.child("location").child("lat").getValue();
-                            Object objLon = snap.child("location").child("lon").getValue();
-                            if(objLat != null && objLon != null){
-                                lat = (double) objLat;
-                                lon = (double) objLon;
-                            }
-                            // make arraylist of sports of the user
-                            for(DataSnapshot sport_name: snap.child("sports").getChildren()){
-                                user_sports.add(sport_name.getKey());
-                            }
+                        Object objLat = snap.child("location").child("lat").getValue();
+                        Object objLon = snap.child("location").child("lon").getValue();
+                        if(objLat != null && objLon != null){
+                            lat = (double) objLat;
+                            lon = (double) objLon;
+                        }
+                        // make arraylist of sports of the user
+                        for(DataSnapshot sport_name: snap.child("sports").getChildren()){
+                            user_sports.add(sport_name.getKey());
+                        }
                     }
                 }
                 // Let's create an ArrayList of User_Distance objects
@@ -137,19 +138,17 @@ public class PlayersFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 }
                 playersAdapter = new PlayersAdapter(getContext(), mUsers, false, lat, lon);
                 recyclerView.setAdapter(playersAdapter);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
     @Override
     public void onRefresh() {
         readUsers();
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     public double distance(double lat1, double lon1, double lat2, double lon2){

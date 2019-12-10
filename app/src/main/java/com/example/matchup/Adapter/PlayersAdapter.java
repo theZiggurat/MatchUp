@@ -10,11 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.matchup.MessageActivity;
 import com.example.matchup.Model.Chat;
+import com.example.matchup.Model.Sport;
 import com.example.matchup.Model.User;
 import com.example.matchup.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -121,6 +124,16 @@ public class PlayersAdapter extends RecyclerView.Adapter<PlayersAdapter.ViewHold
             }
         });
 
+        ArrayList<Sport> userSports = new ArrayList<>();
+        for(DataSnapshot sportSnap: user.child("sports").getChildren()){
+            userSports.add(new Sport(
+                    (String)sportSnap.getKey(),
+                    ((Number)sportSnap.getValue()).intValue()
+            ));
+        }
+        holder.sportList.setAdapter(new SportListAdapter(userSports));
+        holder.sportList.setLayoutManager(new LinearLayoutManager(mContext));
+
     }
 
     @Override
@@ -130,11 +143,11 @@ public class PlayersAdapter extends RecyclerView.Adapter<PlayersAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView username, description, distance;
-        public ImageView profile_image;
-        private ImageView img_online;
-        private ImageView img_offline;
-//        private TextView last_msg;
+        TextView username, description, distance;
+        ImageView profile_image;
+        ImageView img_online;
+        ImageView img_offline;
+        RecyclerView sportList;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -145,47 +158,53 @@ public class PlayersAdapter extends RecyclerView.Adapter<PlayersAdapter.ViewHold
             profile_image = itemView.findViewById(R.id.profile_image);
             img_online = itemView.findViewById(R.id.img_online);
             img_offline = itemView.findViewById(R.id.img_offline);
-//            last_msg = itemView.findViewById(R.id.last_msg);
+            sportList = itemView.findViewById(R.id.sportlist);
         }
     }
 
-//    //Check for the last message exchanged
-//    private void lastMessage(final String userid, final TextView last_msg){
-//        lastMessage = "default";
-//        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
-//
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Chat chat = snapshot.getValue(Chat.class);
-//
-//                    if (chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) ||
-//                            chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid())) {
-//
-//                        lastMessage = chat.getMessage();
-//
-//                    }
-//                }
-//
-//                switch (lastMessage){
-//                    case "default":
-//                        last_msg.setText("No Message");
-//                        break;
-//                    default:
-//                        last_msg.setText(lastMessage);
-//                        break;
-//                }
-//
-//                lastMessage = "default";
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
+    class SportListAdapter extends RecyclerView.Adapter<SportListAdapter.ViewHolder> {
+
+        ArrayList<Sport> mSports;
+        SportListAdapter(ArrayList<Sport> sports){
+            this.mSports = sports;
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.player_card_sport_item, parent, false);
+            return new SportListAdapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            Sport sport = mSports.get(position);
+            holder.name.setText(sport.sportName);
+            holder.proficiency.setText(sport.getProficiencyString());
+            int textColor;
+            switch(sport.proficiency){
+                case 1: textColor = R.color.textColorGreen; break;
+                case 2: textColor = R.color.textColorOrange; break;
+                case 3: textColor = R.color.textColorRed; break;
+                default: textColor = R.color.colorPrimaryDark;
+            }
+            holder.proficiency.setTextColor(ContextCompat.getColor(mContext, textColor));
+        }
+
+        @Override
+        public int getItemCount() {
+            return mSports.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView name, proficiency;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+
+                name = itemView.findViewById(R.id.sportName);
+                proficiency = itemView.findViewById(R.id.proficiency);
+            }
+        }
+    }
 }
