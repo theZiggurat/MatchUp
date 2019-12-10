@@ -1,41 +1,42 @@
 package com.example.matchup.Fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.matchup.MainActivity;
+import com.example.matchup.Adapter.SportsAdapter;
+import com.example.matchup.Model.Sport;
 import com.example.matchup.Model.User;
 import com.example.matchup.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.matchup.RegisterActivity;
 import com.example.matchup.StartActivity;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,12 +50,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
@@ -64,13 +66,19 @@ import static android.app.Activity.RESULT_OK;
 // (a) Retrieve user location and list it
 // (b) Allow user to specify level of athleticism
 // (c) Specify what sports user is interested in
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements SportsAdapter.OnSportChange {
 
     CircleImageView image_profile;
     TextView username;
 
     DatabaseReference reference;
+    DatabaseReference sportsReference;
     FirebaseUser fuser;
+    RecyclerView recyclerView;
+    SportsAdapter sportsAdapter;
+    FloatingActionButton fab;
+    EditText editProfile;
+    Button buttonSave;
 
     StorageReference storageReference;
     private static final int IMAGE_REQUEST = 1;
@@ -85,47 +93,132 @@ public class ProfileFragment extends Fragment {
 
         image_profile = view.findViewById(R.id.profile_image);
         username = view.findViewById(R.id.username);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        fab = view.findViewById(R.id.fab);
+        editProfile = view.findViewById(R.id.profile_description);
+        buttonSave = view.findViewById(R.id.savebtn);
+
+        sportsAdapter = new SportsAdapter(getActivity(), this);
+        recyclerView.setAdapter(sportsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        sportsReference = reference.child("sports");
 
-        reference.addValueEventListener(new ValueEventListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
-
-                if(user.getImageURL().equals("default")){
-                    image_profile.setImageResource(R.mipmap.ic_launcher);
-                } else {
-                    Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
-                }
-                //testing
+            public void onClick(View view) {
+                showDialog();
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
         image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDialog();
+                openImage();
+            }
+        });
+
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reference.child("description").setValue(editProfile.getText().toString());
             }
         });
 
         return view;
     }
 
-    private void openDialog(){
-        //Intent intent = new Intent(getActivity(), PhotoImportFragment.class);
-        Intent intent = new Intent();
-        intent.setClassName("com.example.matchup", "com.example.matchup.PhotoImport");
-        startActivityForResult(intent, 2);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(getActivity()==null) return;
+
+                User user = dataSnapshot.getValue(User.class);
+                username.setText(user.getUsername());
+
+                updateRecyclerView(dataSnapshot);
+
+                if(user.getImageURL().equals("default")){
+                    image_profile.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
+                }
+
+                String description = (String)dataSnapshot.child("description").getValue();
+                if(description != null){
+                    editProfile.setText(description);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
 
+
+
+    void updateRecyclerView(DataSnapshot dataSnapshot){
+        ArrayList<Sport> sports = new ArrayList<>((int)dataSnapshot.getChildrenCount());
+        for(DataSnapshot snapshot: dataSnapshot.child("sports").getChildren()){
+            Sport sp = new Sport(
+                snapshot.getKey(),
+                ((Number)snapshot.getValue()).intValue()
+            );
+
+            sports.add(sp);
+        }
+
+        sportsAdapter.setSports(sports);
+        sportsAdapter.notifyDataSetChanged();
+    }
+
+    void showDialog(){
+
+        final ArrayList<String> addableSports = new ArrayList<>(Arrays.asList(Sport.SPORT_LIST));
+        for(Sport sport: sportsAdapter.getSports())
+            addableSports.remove(sport.sportName);
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_add_sport);
+        dialog.show();
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                getContext(), android.R.layout.simple_list_item_1, addableSports);
+
+        final ListView listView = dialog.findViewById(R.id.list);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String sportName = adapter.getItem(i);
+                sportsAdapter.addSport(new Sport(sportName, 0));
+                sportsReference.child(sportName).setValue(0);
+                dialog.cancel();
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onDeleteSport(String sportName) {
+        reference.child("sports").child(sportName).removeValue();
+    }
+
+    @Override
+    public void onProficiencyChange(String sportName, int proficiency){
+        reference.child("sports").child(sportName).setValue(proficiency);
+    }
+          
     private void openImage(){
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -172,7 +265,7 @@ public class ProfileFragment extends Fragment {
                         pd.dismiss();
                     }
                     else {
-                        Toast.makeText(getContext(), "Failed because over daily quota.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
                 }
@@ -191,62 +284,14 @@ public class ProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //FINISHING auxiliary activity:
-        if (requestCode == 2){
-            int optionId = data.getIntExtra("optionId", 0);
-
-            if (optionId == 0){
-                openImage();
-            }
-            if (optionId == 1){ //Take a picture
-                takePhoto();
-            }
-        } //Camera result
-        else if (requestCode == 3 && resultCode == RESULT_OK){
-            //Broken code b/c of Storage
-            /*final ProgressDialog pd = new ProgressDialog(getContext());
-            pd.setMessage("Uploading");
-            pd.show();
-
-            Uri uri = data.getData();
-            StorageReference filepath = storageReference.child("Photos").child(uri.getLastPathSegment());
-            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    pd.dismiss();
-                    Toast.makeText(getContext(), "Uploading Finished", Toast.LENGTH_SHORT).show();
-                }
-            });*/
-
-            /*final ProgressDialog pd = new ProgressDialog(getContext());
-            pd.setMessage("Uploading");
-            pd.show();
-
-            Uri uri = data.getData();
-            StorageReference filepath = storageReference.child("Photos").child(uri.getLastPathSegment());
-            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    pd.dismiss();
-                    Toast.makeText(getContext(), "Uploading Finished", Toast.LENGTH_SHORT).show();
-                }
-            });*/
-
-        } //Image data regarding storage DB
-        else if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null
         && data.getData() != null){
             imageUri = data.getData();
             if (uploadTask != null && uploadTask.isInProgress()){
                 Toast.makeText(getContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
-            } else {
+            } else{
                 uploadImage();
             }
         }
     }
-
-    public void takePhoto(){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, 3);
-    }
-
 }

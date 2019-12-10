@@ -1,7 +1,5 @@
 package com.example.matchup.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,11 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.matchup.Adapter.PlayerAdapter;
+import com.example.matchup.Adapter.ChatsAdapter;
 import com.example.matchup.Model.Chat;
 import com.example.matchup.Model.User;
+import com.example.matchup.Notifications.Token;
 import com.example.matchup.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class ChatsFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private PlayerAdapter playerAdapter;
+    private ChatsAdapter chatsAdapter;
     private List<User> mUsers;
 
     FirebaseUser fuser;
@@ -63,6 +62,7 @@ public class ChatsFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(getActivity()==null) return;
                 usersList.clear();
 
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
@@ -86,8 +86,17 @@ public class ChatsFragment extends Fragment {
             }
         });
 
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
         return view;
     }
+
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token(token);
+        reference.child(fuser.getUid()).setValue(token1);
+    }
+
 
     private void readChats(){
         mUsers = new ArrayList<>();
@@ -115,8 +124,8 @@ public class ChatsFragment extends Fragment {
                     }
                 }
 
-                playerAdapter = new PlayerAdapter(getContext(), mUsers, true);
-                recyclerView.setAdapter(playerAdapter);
+                chatsAdapter = new ChatsAdapter(getContext(), mUsers, true);
+                recyclerView.setAdapter(chatsAdapter);
 
             }
 

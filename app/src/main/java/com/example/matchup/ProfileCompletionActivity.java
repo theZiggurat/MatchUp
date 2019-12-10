@@ -1,16 +1,12 @@
 package com.example.matchup;
 
-import android.app.AppComponentFactory;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,11 +21,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class ProfileCompletionActivity extends AppCompatActivity {
+public class ProfileCompletionActivity extends AppCompatActivity implements SportsAdapter.OnSportChange {
 
     private LinkedList<String> spinnerList;
 
@@ -49,7 +44,7 @@ public class ProfileCompletionActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
 
-        final SportsAdapter sportsAdapter = new SportsAdapter(this);
+        final SportsAdapter sportsAdapter = new SportsAdapter(this, this);
         recyclerView.setAdapter(sportsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -61,7 +56,8 @@ public class ProfileCompletionActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position==0) return;
-                sportsAdapter.addSport(spinnerList.get(position));
+                Sport sp = new Sport(spinnerList.get(position), 1);
+                sportsAdapter.addSport(sp);
                 spinnerList.remove(position);
                 spinnerAdapter.notifyDataSetChanged();
                 spinner.setSelection(0);
@@ -97,7 +93,9 @@ public class ProfileCompletionActivity extends AppCompatActivity {
 
     }
 
-    public void addSportBack(String sportName){
+    public void onDeleteSport(String sportName){
         spinnerList.add(sportName);
     }
+
+    public void onProficiencyChange(String sportName, int proficiency){ }
 }
