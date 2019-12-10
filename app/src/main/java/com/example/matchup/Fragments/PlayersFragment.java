@@ -70,6 +70,7 @@ public class PlayersFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 if(getActivity()==null) return;
                 mUsers.clear();
                 double lat = 0.0, lon = 0.0;
+                ArrayList<String> user_sports = new ArrayList<>();
                 for(DataSnapshot snap: dataSnapshot.getChildren()){
                     if(snap.getKey()!=firebaseUser.getUid())
                         mUsers.add(snap);
@@ -80,17 +81,31 @@ public class PlayersFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             lat = (double) objLat;
                             lon = (double) objLon;
                         }
+                        // make arraylist of sports of the user
+                        for(DataSnapshot sport_name: snap.child("sports").getChildren()){
+                            user_sports.add(sport_name.getKey());
+                        }
                     }
                 }
                 // Let's create an ArrayList of User_Distance objects
                 ArrayList<User_Distance> user_distances = new ArrayList<User_Distance>();
+                boolean key = false;
                 for(DataSnapshot snap: dataSnapshot.getChildren()){
                     if(snap.getKey() != firebaseUser.getUid()){
-                        if (snap.child("location").child("lat").getValue() != null && snap.child("location").child("lon").getValue() != null) {
-                            User_Distance temp = new User_Distance();
-                            temp.setId(snap.getKey());
-                            temp.setDistance(distance(lat, lon, (double) snap.child("location").child("lat").getValue(), (double) snap.child("location").child("lon").getValue()));
-                            user_distances.add(temp);
+                        // check if common sports are available with the user, and only add to list if it is
+                        key = false;
+                        for(DataSnapshot sport_name: snap.child("sports").getChildren()){
+                            if(user_sports.contains(sport_name.getKey())){
+                                key = true;
+                            }
+                        }
+                        if(key == true){
+                            if (snap.child("location").child("lat").getValue() != null && snap.child("location").child("lon").getValue() != null) {
+                                User_Distance temp = new User_Distance();
+                                temp.setId(snap.getKey());
+                                temp.setDistance(distance(lat, lon, (double) snap.child("location").child("lat").getValue(), (double) snap.child("location").child("lon").getValue()));
+                                user_distances.add(temp);
+                            }
                         }
                     }
                 }
