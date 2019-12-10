@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -200,8 +202,22 @@ public class ProfileFragment extends Fragment {
                 takePhoto();
             }
         } //Camera result
-        else if (requestCode == 3){
+        else if (requestCode == 3 && resultCode == RESULT_OK){
             //Broken code b/c of Storage
+            /*final ProgressDialog pd = new ProgressDialog(getContext());
+            pd.setMessage("Uploading");
+            pd.show();
+
+            Uri uri = data.getData();
+            StorageReference filepath = storageReference.child("Photos").child(uri.getLastPathSegment());
+            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    pd.dismiss();
+                    Toast.makeText(getContext(), "Uploading Finished", Toast.LENGTH_SHORT).show();
+                }
+            });*/
+
             /*final ProgressDialog pd = new ProgressDialog(getContext());
             pd.setMessage("Uploading");
             pd.show();
@@ -227,11 +243,10 @@ public class ProfileFragment extends Fragment {
             }
         }
     }
+
     public void takePhoto(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, 3);
     }
-
-
 
 }
