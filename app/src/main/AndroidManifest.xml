@@ -2,11 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.matchup">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +19,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+      
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyAevrbPPENd165RGT2TA0XtBMBubKTpFn8" />
+      
         <activity android:name=".ResetPasswordActivity"
             android:parentActivityName=".LoginActivity"></activity>
         <activity android:name=".MessageActivity" />
+      
         <activity android:name=".StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +45,14 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".ProfileCompletionActivity"
-            android:parentActivityName=".RegisterActivity" />
+            android:parentActivityName=".RegisterActivity"
+            />
+        <activity android:name=".PhotoImport"
+            android:theme="@style/AppTheme.CustomTheme">
+        </activity>
+        <activity android:name=".MapActivity"
+            android:label="Google Maps">
+        </activity>
 
         <service
             android:name=".Notifications.MyFirebaseIdService"

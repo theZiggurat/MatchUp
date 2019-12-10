@@ -1,6 +1,7 @@
 package com.example.matchup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -34,6 +37,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -140,7 +144,73 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        //Toolbar buttons
+        ImageButton btnCalendar = (ImageButton) findViewById(R.id.btnCalendar);
+        btnCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Create event, log in Google Calendar, insert event
+                Calendar rightNow = Calendar.getInstance();
+                addEvent("Game Name", "Venue Name", rightNow.getTimeInMillis(), rightNow.getTimeInMillis() + 1000*60*60);
+            }
+        });
+        ImageButton btnLocation = (ImageButton) findViewById(R.id.btnLocation);
+        btnLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Open Map Activity
+                //Pin down a location, return this location info in a string
+                //Send this location info to person chatting
+
+                Intent intent = new Intent(MessageActivity.this, MapActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+        /*ImageButton btnSavedPhoto = (ImageButton) findViewById(R.id.btnSavedPhoto);
+        btnSavedPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Enable capability to send/save photos in chat/links to photos
+                //Somehow be able to load photos/ImageView into a chat msg
+                //Somehow read photos in storage database
+            }
+        });
+        ImageButton btnTakePhoto = (ImageButton) findViewById(R.id.btnTakePhoto);
+        btnTakePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Open camera
+                //Send new photo to storage to save
+                //Enable capability to send/save photos in chat/links to photos
+                //Somehow be able to load photos/ImageView into a chat msg
+                //Somehow read photos in storage database
+            }
+        });*/
+
         seenMessage(userid);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1){ //for location
+            String address = data.getStringExtra("address");
+            //Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
+            text_send.setText("Let's meet here: " + address);
+        }
+    }
+
+    public void addEvent(String title, String location, long begin, long end) {
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.Events.TITLE, title)
+                .putExtra(CalendarContract.Events.EVENT_LOCATION, location)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, begin)
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, end);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     private void seenMessage(final String userid){
